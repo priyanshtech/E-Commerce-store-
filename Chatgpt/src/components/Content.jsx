@@ -1,13 +1,15 @@
 import { FaArrowUp, FaPlus } from "react-icons/fa6";
+import { BsLayoutSidebar } from "react-icons/bs"
 import { useState } from "react";
-export default function Content() {
+export default function Content({ chatHistory, setChatHistory, open, setOpen }) {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
 
+
   const handleSend = async () => {
     if (!input.trim() || loading) return;
-
+    const userMessage = input;
     setLoading(true);
     setResponse("");
 
@@ -17,7 +19,7 @@ export default function Content() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: userMessage }),
       });
 
       const data = await res.json();
@@ -33,19 +35,26 @@ export default function Content() {
     } finally {
       setLoading(false);
       setInput("");
+      setChatHistory((prev) => [...prev, { role: "user", content: userMessage }]);
     }
   };
 
   return (
     <div className="flex flex-col h-screen bg-[#212121] w-full font-sans">
-      <header className="h-10 flex items-center px-4 mt-2">
+      <header className="h-10 flex items-center px-4 mt-2 border-b border-neutral-700
+">
         {/* Left side */}
         <div className="text-xl text-gray-200 flex items-center font-semibold">
+          {!open && (
+            <div className="mr-3 p-2 hover:bg-[#2f2f2f] rounded-lg cursor-pointer flex items-center justify-center transition-all duration-300" onClick={() => setOpen(true)}>
+              <BsLayoutSidebar size={20} />
+            </div>
+          )}
           <h3 className="cursor-pointer hover:bg-[#2f2f2f] px-3 py-1 rounded-lg transition-all">ChatGPT 5.3 ∨</h3>
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-4 ml-auto text-gray-400 text-sm">
+        <div className="flex items-center gap-4 ml-auto text-gray-400 text-sm ">
           <h3 className="cursor-pointer hover:text-white">Share</h3>
           <h3 className="cursor-pointer hover:text-white">Add people</h3>
           <h3 className="cursor-pointer hover:text-white">Personalize</h3>

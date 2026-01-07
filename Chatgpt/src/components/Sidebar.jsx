@@ -9,14 +9,14 @@ import {
   RiBox3Line
 } from "react-icons/ri"
 
-export default function Sidebar() {
+export default function Sidebar({ chatHistory, setChatHistory, open, setOpen }) {
   return (
-    <div className="flex flex-col h-screen w-72 bg-[#181818] border-r border-white/10 text-white ">
+    <div className={`flex flex-col h-screen transition-all duration-300 border-r border-white/10 text-white bg-[#181818] ${open ? "w-72" : "w-0 overflow-hidden border-none"}`}>
 
       {/* Header */}
-      <div className="h-16 px-4 flex items-center rounded-lg text-lg">
-        <SiOpenai size={24} />
-        <BsLayoutSidebar size={20} className="ml-auto cursor-pointer" />
+      <div className="h-16 px-4 flex items-center rounded-lg text-lg flex-shrink-0">
+        <SiOpenai size={26} />
+        <BsLayoutSidebar size={20} className="ml-auto cursor-pointer hover:text-gray-400 " onClick={() => setOpen(!open)} />
       </div>
 
       {/* Menu */}
@@ -51,9 +51,18 @@ export default function Sidebar() {
           <RiBox3Line size={22} />
           <li className="text-sm">Projects</li>
         </div>
+        <div >
+          <p className="text-sm text-gray-400 mt-8">Your chats</p>
+          {chatHistory.map((chat, index) => (
+            <div key={index} className="mt-4">
+              <p className="text-lg mt-1">{chat.content.trim().slice(0, 20)}</p>
+            </div>
+          ))}
+        </div>
 
       </ul>
-      
+
+
     </div>
   )
 }
